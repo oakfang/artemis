@@ -6,7 +6,7 @@ setup(
     packages=['artemis'],
     url='',
     license='',
-    install_requires=["six==1.8.0", "tornado>=4.0", "schematics==1.0-0", "tinydb==2.1.0"],
-    author='foo',
+    install_requires=["tornado>=4.0", "schematics>=1.0", "tinydb>=2.1.0"],
+    author='oakfang',
     description='Async Restful TinyDB Models'
 )
