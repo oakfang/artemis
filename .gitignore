@@ -1,0 +1,4 @@
+.idea/
+artemis.egg-info/
+dist/
+*.pyc
