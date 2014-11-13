@@ -1,6 +1,9 @@
 
 from schematics.models import Model
 from schematics.types import StringType
+from tinydb import TinyDB
+
+from web import ModelBaseRequest, ModelIDRequest, ModelMethodRequest, ModelQueryRequest
 
 
 def restful(**kwlambdas):
@@ -12,6 +15,31 @@ def restful(**kwlambdas):
 
 class EntityNotFoundException(Exception):
     pass
+
+
+class DBEntity(object):
+    def __init__(self, db_path):
+        self._db = TinyDB(db_path)
+
+    def table(self, tname):
+        return self._db.table(tname)
+
+    def model(self, model_name):
+        def _outer(model_cls):
+            model_cls.__table__ = self.table(model_name)
+            model_cls.routes = [
+                (r'/{}'.format(model_name),
+                 ModelBaseRequest, dict(model=model_cls)),
+                (r'/{}/query'.format(model_name),
+                 ModelQueryRequest, dict(model=model_cls)),
+                (r'/{}/([a-zA-Z\-_0-9]+)'.format(model_name),
+                 ModelIDRequest, dict(model=model_cls)),
+                (r'/{}/([a-zA-Z\-_0-9]+)/([a-zA-Z\-_0-9]+)'.format(model_name),
+                 ModelMethodRequest, dict(model=model_cls))
+            ]
+
+            return model_cls
+        return _outer
 
 
 class ArtemisModel(Model):
