@@ -15,6 +15,6 @@ app = ArtemisApplication('db.json')
 @app.model('foos')
 class Foo(ArtemisModel):
     name = types.StringType(required=True)
-    age = type.FloatType(default=5)
+    age = types.FloatType(default=5)
 
 ```
