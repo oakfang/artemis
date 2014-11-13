@@ -1,6 +1,6 @@
 
 import json
-from operator import and_, or_
+from operator import and_, or_, add
 
 from tornado.web import RequestHandler, Application
 from tinydb import TinyDB, where
@@ -88,6 +88,11 @@ class ArtemisApplication(Application):
     def __init__(self, db_file, *args, **kwargs):
         super(ArtemisApplication, self).__init__(*args, **kwargs)
         self._db = TinyDB(db_file)
+
+    def merge_host(self, host):
+        specs = filter(lambda (hostrx, _): hostrx.pattern == host, self.handlers)
+        map(self.handlers.remove, specs)
+        self.add_handlers(host, reduce(add, [s for _, s in specs]))
 
     def table(self, tname):
         return self._db.table(tname)
